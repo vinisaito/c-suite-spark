@@ -31,51 +31,62 @@ export const ChangeTimeline = ({ changes }: ChangeTimelineProps) => {
   };
 
   return (
-    <Card className="p-6 bg-card border-border">
-      <div className="space-y-4">
-        {changes.map((change, index) => (
-          <div 
-            key={change.id} 
-            className="relative pl-8 pb-6 last:pb-0 border-l-2 border-border last:border-l-0"
-          >
-            {/* Timeline dot */}
-            <div className="absolute left-0 top-0 -translate-x-[9px] w-4 h-4 rounded-full bg-background border-2 border-primary" />
+    <Card className="p-8 bg-card border-border overflow-x-auto">
+      <div className="relative min-w-max">
+        {/* Horizontal line */}
+        <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-border -translate-y-1/2" />
+        
+        {/* Timeline items */}
+        <div className="relative flex items-center justify-start gap-16 px-8">
+          {changes.map((change, index) => {
+            const isTop = index % 2 === 0;
             
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-              <div className="flex-1">
-                <div className="flex items-start gap-3 mb-2">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-mono text-muted-foreground">{change.id}</span>
-                      {change.status === "success" ? (
-                        <CheckCircle2 className="h-4 w-4 text-success" />
-                      ) : (
-                        <XCircle className="h-4 w-4 text-destructive" />
-                      )}
+            return (
+              <div key={change.id} className="relative flex flex-col items-center w-64">
+                {/* Card positioned above or below */}
+                <div className={`${isTop ? 'order-1 mb-8' : 'order-3 mt-8'} w-full`}>
+                  <Card className="p-4 bg-background border-border shadow-md hover:shadow-lg transition-all duration-300 animate-fade-in">
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-mono text-muted-foreground">{change.id}</span>
+                          {change.status === "success" ? (
+                            <CheckCircle2 className="h-4 w-4 text-success" />
+                          ) : (
+                            <XCircle className="h-4 w-4 text-destructive" />
+                          )}
+                        </div>
+                        <Badge className={`${getEnvironmentColor(change.environment)} border text-xs shrink-0`}>
+                          {change.environment}
+                        </Badge>
+                      </div>
+                      
+                      <h4 className="text-sm font-semibold text-foreground leading-tight">
+                        {change.title}
+                      </h4>
+                      
+                      <div className="space-y-1 text-xs text-muted-foreground">
+                        <div className="flex items-center justify-between">
+                          <span>Por: {change.requester}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {change.duration}
+                          </span>
+                          <span className="font-semibold text-foreground">{change.timestamp}</span>
+                        </div>
+                      </div>
                     </div>
-                    <h4 className="text-base font-semibold text-foreground mb-1">
-                      {change.title}
-                    </h4>
-                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                      <span>Por: {change.requester}</span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {change.duration}
-                      </span>
-                    </div>
-                  </div>
+                  </Card>
                 </div>
+                
+                {/* Center dot on timeline */}
+                <div className="order-2 w-5 h-5 rounded-full bg-primary border-4 border-background shadow-md z-10" />
               </div>
-              
-              <div className="flex items-center gap-2 sm:flex-col sm:items-end">
-                <Badge className={`${getEnvironmentColor(change.environment)} border text-xs`}>
-                  {change.environment}
-                </Badge>
-                <span className="text-sm font-semibold text-foreground">{change.timestamp}</span>
-              </div>
-            </div>
-          </div>
-        ))}
+            );
+          })}
+        </div>
       </div>
     </Card>
   );
