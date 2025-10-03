@@ -116,14 +116,15 @@ export const ChangeTimeline = ({ changes }: ChangeTimelineProps) => {
               className="absolute"
               style={{
                 left: `${actualCol * itemWidth}%`,
-                top: `${row * 180}px`,
+                top: `${row * 180 + 90}px`,
                 width: `${itemWidth}%`,
+                transform: 'translateY(-50%)',
                 zIndex: 10,
               }}
             >
               <div className="flex flex-col items-center px-2">
                 {/* Card above the dot */}
-                <Card className="w-full mb-4 p-3 bg-card/80 backdrop-blur border-border/50 hover:bg-card/90 transition-all hover:shadow-lg">
+                <Card className="w-full mb-2 p-3 bg-card/80 backdrop-blur border-border/50 hover:bg-card/90 transition-all hover:shadow-lg">
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-xs font-semibold text-foreground truncate">{change.id}</span>
