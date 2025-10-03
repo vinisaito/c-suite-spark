@@ -52,53 +52,62 @@ export const ChangeTimeline = ({ changes }: ChangeTimelineProps) => {
             </linearGradient>
           </defs>
           
+          {/* Draw continuous path through all points */}
+          <path
+            d={(() => {
+              let pathData = '';
+              changes.forEach((_, index) => {
+                const row = Math.floor(index / itemsPerRow);
+                const col = index % itemsPerRow;
+                const isLeftToRight = row % 2 === 0;
+                const itemWidth = 100 / itemsPerRow;
+                
+                const x = isLeftToRight ? (col + 0.5) * itemWidth : (itemsPerRow - col - 0.5) * itemWidth;
+                const y = row * 180 + 90;
+                
+                if (index === 0) {
+                  pathData = `M ${x}% ${y}`;
+                } else {
+                  const prevRow = Math.floor((index - 1) / itemsPerRow);
+                  const prevCol = (index - 1) % itemsPerRow;
+                  const prevIsLeftToRight = prevRow % 2 === 0;
+                  
+                  // Moving to next row
+                  if (row !== prevRow) {
+                    const curveRadius = 40;
+                    if (prevIsLeftToRight) {
+                      pathData += ` L 100% ${prevRow * 180 + 90} Q 100% ${prevRow * 180 + 90 + curveRadius}, ${100 - curveRadius * 0.5}% ${prevRow * 180 + 90 + curveRadius} L ${x}% ${y}`;
+                    } else {
+                      pathData += ` L 0% ${prevRow * 180 + 90} Q 0% ${prevRow * 180 + 90 + curveRadius}, ${curveRadius * 0.5}% ${prevRow * 180 + 90 + curveRadius} L ${x}% ${y}`;
+                    }
+                  } else {
+                    pathData += ` L ${x}% ${y}`;
+                  }
+                }
+              });
+              return pathData;
+            })()}
+            stroke="hsl(var(--primary))"
+            strokeWidth="3"
+            fill="none"
+          />
+          
+          {/* Draw circles on each point */}
           {changes.map((_, index) => {
-            if (index === changes.length - 1) return null;
-            
-            const currentRow = Math.floor(index / itemsPerRow);
-            const currentCol = index % itemsPerRow;
-            const nextRow = Math.floor((index + 1) / itemsPerRow);
-            const nextCol = (index + 1) % itemsPerRow;
-            
-            const isLeftToRight = currentRow % 2 === 0;
+            const row = Math.floor(index / itemsPerRow);
+            const col = index % itemsPerRow;
+            const isLeftToRight = row % 2 === 0;
             const itemWidth = 100 / itemsPerRow;
             
-            const x1 = isLeftToRight ? (currentCol + 0.5) * itemWidth : (itemsPerRow - currentCol - 0.5) * itemWidth;
-            const x2 = isLeftToRight ? (nextCol + 0.5) * itemWidth : (itemsPerRow - nextCol - 0.5) * itemWidth;
-            const y1 = currentRow * 180 + 90;
-            const y2 = nextRow * 180 + 90;
+            const x = isLeftToRight ? (col + 0.5) * itemWidth : (itemsPerRow - col - 0.5) * itemWidth;
+            const y = row * 180 + 90;
             
-            // If moving to next row, create a curve
-            if (currentRow !== nextRow) {
-              const curveRadius = 40;
-              const path = isLeftToRight
-                ? `M ${x1}% ${y1} L ${100}% ${y1} Q ${100}% ${y1 + curveRadius}, ${100 - curveRadius * 0.5}% ${y1 + curveRadius} L ${x2}% ${y2}`
-                : `M ${x1}% ${y1} L 0% ${y1} Q 0% ${y1 + curveRadius}, ${curveRadius * 0.5}% ${y1 + curveRadius} L ${x2}% ${y2}`;
-              
-              return (
-                <path
-                  key={index}
-                  d={path}
-                  stroke="url(#lineGradient)"
-                  strokeWidth="2"
-                  fill="none"
-                  strokeDasharray="8,4"
-                />
-              );
-            } else {
-              return (
-                <line
-                  key={index}
-                  x1={`${x1}%`}
-                  y1={y1}
-                  x2={`${x2}%`}
-                  y2={y2}
-                  stroke="url(#lineGradient)"
-                  strokeWidth="2"
-                  strokeDasharray="8,4"
-                />
-              );
-            }
+            return (
+              <g key={index}>
+                <circle cx={`${x}%`} cy={y} r="8" fill="hsl(var(--background))" stroke="hsl(var(--primary))" strokeWidth="3" />
+                <circle cx={`${x}%`} cy={y} r="4" fill="hsl(var(--primary))" />
+              </g>
+            );
           })}
         </svg>
 
@@ -137,11 +146,8 @@ export const ChangeTimeline = ({ changes }: ChangeTimelineProps) => {
                   </div>
                 </Card>
                 
-                {/* Dot on the line */}
-                <div className="relative flex items-center justify-center">
-                  <div className="w-4 h-4 rounded-full bg-primary border-4 border-background shadow-lg" />
-                  <div className="absolute w-6 h-6 rounded-full bg-primary/20 animate-pulse" />
-                </div>
+                {/* Invisible placeholder to maintain spacing */}
+                <div className="w-4 h-4" />
               </div>
             </div>
           );
