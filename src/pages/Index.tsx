@@ -1,37 +1,59 @@
 import { MetricCard } from "@/components/MetricCard";
 import { AreaReport } from "@/components/AreaReport";
-import { TrendingUp, Users, DollarSign, Target, BarChart3 } from "lucide-react";
+import { ChangeTimeline } from "@/components/ChangeTimeline";
+import { TrendingUp, Users, DollarSign, Target, BarChart3, GitBranch, CheckCircle2, XCircle, Clock } from "lucide-react";
 
 const Index = () => {
   const metrics = [
     {
-      title: "Receita Total",
-      value: "R$ 45.2M",
-      change: "+12.5% vs mês anterior",
+      title: "Mudanças Executadas",
+      value: "18",
+      change: "Últimas 24 horas",
       trend: "up" as const,
-      icon: DollarSign,
+      icon: GitBranch,
     },
     {
-      title: "Clientes Ativos",
-      value: "32.4K",
-      change: "+8.2% vs mês anterior",
+      title: "Taxa de Sucesso",
+      value: "83.3%",
+      change: "+5.2% vs período anterior",
       trend: "up" as const,
-      icon: Users,
+      icon: CheckCircle2,
     },
     {
-      title: "Taxa de Conversão",
-      value: "24.8%",
-      change: "+2.1% vs mês anterior",
-      trend: "up" as const,
-      icon: Target,
-    },
-    {
-      title: "Performance Geral",
-      value: "87.3%",
-      change: "-1.2% vs mês anterior",
+      title: "Mudanças Falhadas",
+      value: "3",
+      change: "-1 vs período anterior",
       trend: "down" as const,
-      icon: TrendingUp,
+      icon: XCircle,
     },
+    {
+      title: "Tempo Médio",
+      value: "12min",
+      change: "-3min vs período anterior",
+      trend: "down" as const,
+      icon: Clock,
+    },
+  ];
+
+  const changes = [
+    { id: "CHG-001", title: "Deploy Frontend", environment: "Produção" as const, status: "success" as const, timestamp: "14:30" },
+    { id: "CHG-002", title: "Update Database", environment: "Produção" as const, status: "success" as const, timestamp: "14:45" },
+    { id: "CHG-003", title: "API Hotfix", environment: "Produção" as const, status: "failed" as const, timestamp: "15:20" },
+    { id: "CHG-004", title: "Security Patch", environment: "Homologação" as const, status: "success" as const, timestamp: "16:00" },
+    { id: "CHG-005", title: "New Feature", environment: "Homologação" as const, status: "success" as const, timestamp: "16:30" },
+    { id: "CHG-006", title: "Bug Fix", environment: "Desenvolvimento" as const, status: "success" as const, timestamp: "17:00" },
+    { id: "CHG-007", title: "Config Update", environment: "Desenvolvimento" as const, status: "success" as const, timestamp: "17:15" },
+    { id: "CHG-008", title: "Library Update", environment: "Homologação" as const, status: "success" as const, timestamp: "18:00" },
+    { id: "CHG-009", title: "Performance Fix", environment: "Produção" as const, status: "success" as const, timestamp: "18:30" },
+    { id: "CHG-010", title: "UI Enhancement", environment: "Desenvolvimento" as const, status: "pending" as const, timestamp: "19:00" },
+    { id: "CHG-011", title: "API Extension", environment: "Homologação" as const, status: "success" as const, timestamp: "19:30" },
+    { id: "CHG-012", title: "Cache Update", environment: "Produção" as const, status: "failed" as const, timestamp: "20:00" },
+    { id: "CHG-013", title: "Deploy Backend", environment: "Desenvolvimento" as const, status: "success" as const, timestamp: "20:30" },
+    { id: "CHG-014", title: "Schema Update", environment: "Homologação" as const, status: "success" as const, timestamp: "21:00" },
+    { id: "CHG-015", title: "Monitoring Fix", environment: "Produção" as const, status: "success" as const, timestamp: "21:30" },
+    { id: "CHG-016", title: "Integration Test", environment: "Desenvolvimento" as const, status: "success" as const, timestamp: "22:00" },
+    { id: "CHG-017", title: "Rollback Fix", environment: "Produção" as const, status: "failed" as const, timestamp: "22:30" },
+    { id: "CHG-018", title: "Final Deploy", environment: "Homologação" as const, status: "success" as const, timestamp: "23:00" },
   ];
 
   const areaReports = [
@@ -88,7 +110,7 @@ const Index = () => {
             <BarChart3 className="h-8 w-8" />
             <h1 className="text-3xl font-bold">Dashboard Executivo</h1>
           </div>
-          <p className="text-primary-foreground/90">Relatório de Performance das Áreas</p>
+          <p className="text-primary-foreground/90">Mudanças de Ambiente - Últimas 24 Horas</p>
         </div>
       </header>
 
@@ -100,6 +122,14 @@ const Index = () => {
             {metrics.map((metric, index) => (
               <MetricCard key={index} {...metric} />
             ))}
+          </div>
+        </section>
+
+        {/* Timeline Section */}
+        <section className="mb-10">
+          <h2 className="text-2xl font-bold text-foreground mb-6">Timeline de Mudanças</h2>
+          <div className="bg-card/50 rounded-lg border border-border p-6">
+            <ChangeTimeline changes={changes} />
           </div>
         </section>
 
